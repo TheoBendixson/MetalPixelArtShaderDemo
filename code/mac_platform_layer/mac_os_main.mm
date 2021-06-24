@@ -20,7 +20,7 @@
 
 @property game_memory GameMemory;
 @property game_render_commands RenderCommands;
-@property (retain) id<MTLRenderPipelineState> TexturePipelineState;
+@property (retain) id<MTLRenderPipelineState> PixelArtPipelineState;
 @property (retain) id<MTLCommandQueue> CommandQueue;
 @property (retain) id<MTLTexture> TextureAtlas;
 @property (retain) NSMutableArray *VertexBuffers;
@@ -81,7 +81,7 @@ static const NSUInteger kMaxInflightBuffers = 3;
 
         [RenderEncoder setViewport: Viewport];
 
-        [RenderEncoder setRenderPipelineState: [self TexturePipelineState]];
+        [RenderEncoder setRenderPipelineState: [self PixelArtPipelineState]];
 
         mac_texture_size TextureSize = {};
 
@@ -129,6 +129,26 @@ static const NSUInteger kMaxInflightBuffers = 3;
 
 global_variable PixelShaderDemoWindow *Window;
 
+void
+SetupVertexAndCommandBuffer(MTKView *MetalKitView, uint32 VertexBufferSize, NSMutableArray *VertexBuffers, 
+                           game_texture_command_buffer *CommandBuffers, uint32 FrameIndex)
+{
+    game_texture_command_buffer CommandBuffer = {};
+
+    CommandBuffer.TextureVertices = (game_texture_vertex *) mmap(0, VertexBufferSize,
+                                                                 PROT_READ | PROT_WRITE,
+                                                                 MAP_PRIVATE | MAP_ANON, -1, 0);
+
+    id<MTLBuffer> VertexBuffer = [MetalKitView.device newBufferWithBytesNoCopy: CommandBuffer.TextureVertices
+                                                                        length: VertexBufferSize 
+                                                                       options: MTLResourceStorageModeShared
+                                                                   deallocator: nil];
+
+    CommandBuffer.NumberOfTextureVertices = 0;
+    CommandBuffers[FrameIndex] = CommandBuffer;
+    [VertexBuffers addObject: VertexBuffer];
+}
+
 int main(int argc, const char * argv[]) 
 {
     MainWindowDelegate *WindowDelegate = [[MainWindowDelegate alloc] init];
@@ -161,6 +181,70 @@ int main(int argc, const char * argv[])
     MetalKitView.preferredFramesPerSecond = 60;
 
     [Window setContentView: MetalKitView];
+
+    game_render_commands RenderCommands = {}; 
+    RenderCommands.ViewportWidth = (s32)GlobalRenderWidth;
+    RenderCommands.ViewportHeight = (s32)GlobalRenderHeight;
+    RenderCommands.FrameIndex = 0;
+    RenderCommands.ScreenScaleFactor = (r32)([[NSScreen mainScreen] backingScaleFactor]);
+
+    uint32 PageSize = getpagesize();
+    uint32 VertexBufferSize = PageSize*1000;
+
+    NSMutableArray *VertexBuffers = [[NSMutableArray alloc] init];
+
+    for (uint32 Index = 0; Index < 3; Index++)
+    {
+        SetupVertexAndCommandBuffer(MetalKitView, VertexBufferSize, VertexBuffers, 
+                                    RenderCommands.TextureCommandBuffers, Index);
+    }
+
+    NSString *ShaderLibraryFilePath = [[NSBundle mainBundle] pathForResource: @"PixelArtShaders" ofType: @"metallib"];
+    id<MTLLibrary> ShaderLibrary = [MetalKitView.device newLibraryWithFile: ShaderLibraryFilePath error: nil];
+    id<MTLFunction> VertexShader = [ShaderLibrary newFunctionWithName:@"vertexShader"];
+    id<MTLFunction> FragmentShader = [ShaderLibrary newFunctionWithName:@"fragmentShader"];
+
+    MTLRenderPipelineDescriptor *PipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+    PipelineStateDescriptor.label = @"2D Pixel Art Graphics Pipeline";
+    PipelineStateDescriptor.vertexFunction = VertexShader;
+    PipelineStateDescriptor.fragmentFunction = FragmentShader;
+    MTLRenderPipelineColorAttachmentDescriptor *RenderBufferAttachment = PipelineStateDescriptor.colorAttachments[0];
+    RenderBufferAttachment.pixelFormat = MetalKitView.colorPixelFormat;
+
+    NSError *error = NULL;
+    id<MTLRenderPipelineState> PixelArtPipelineState = 
+        [MetalKitView.device newRenderPipelineStateWithDescriptor: PipelineStateDescriptor
+                                                            error: &error];
+
+    if (error != nil)
+    {
+        NSLog(@"Error creating pixel art pipeline state");
+    }
+
+    id<MTLCommandQueue> CommandQueue = [MetalKitView.device newCommandQueue]; 
+
+    MetalViewDelegate *ViewDelegate = [[MetalViewDelegate alloc] init];
+
+    game_memory GameMemory = {};
+    GameMemory.PermanentStorageSize = Megabytes(64);
+    GameMemory.PermanentStorage = mmap(0, GameMemory.PermanentStorageSize,
+                                    PROT_READ | PROT_WRITE,
+                                    MAP_PRIVATE | MAP_ANON, -1, 0);
+
+    if (GameMemory.PermanentStorage == MAP_FAILED) {
+		printf("mmap error: %d  %s", errno, strerror(errno));
+        [NSException raise: @"Game Memory Not Allocated"
+                     format: @"Failed to allocate permanent storage"];
+    }
+
+    ViewDelegate.GameMemory = GameMemory; 
+    ViewDelegate.RenderCommands = RenderCommands; 
+    ViewDelegate.PixelArtPipelineState = PixelArtPipelineState;
+    ViewDelegate.CommandQueue = CommandQueue;
+    ViewDelegate.VertexBuffers = VertexBuffers;
+
+    [ViewDelegate configureMetal];
+    [MetalKitView setDelegate: ViewDelegate];
 
     return NSApplicationMain(argc, argv);
 }
