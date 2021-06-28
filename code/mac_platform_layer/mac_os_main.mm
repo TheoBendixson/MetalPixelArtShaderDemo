@@ -77,9 +77,13 @@ static const NSUInteger kMaxInflightBuffers = 3;
                                       (uint32)RenderCommandsPtr->ViewportHeight };
 
         id<MTLRenderCommandEncoder> RenderEncoder = [CommandBuffer renderCommandEncoderWithDescriptor: RenderPassDescriptor];
-        RenderEncoder.label = @"RenderEncoder";
+        RenderEncoder.label = @"2D Pixel Art Render Encoder";
 
         [RenderEncoder setViewport: Viewport];
+
+        [RenderEncoder setVertexBytes:&ViewportSize
+                               length:sizeof(ViewportSize)
+                              atIndex:1];
 
         [RenderEncoder setRenderPipelineState: [self PixelArtPipelineState]];
 
@@ -199,7 +203,7 @@ int main(int argc, const char * argv[])
                                     RenderCommands.TextureCommandBuffers, Index);
     }
 
-    NSString *ShaderLibraryFilePath = [[NSBundle mainBundle] pathForResource: @"PixelArtShaders" ofType: @"metallib"];
+    NSString *ShaderLibraryFilePath = [[NSBundle mainBundle] pathForResource: @"PixelArtShader" ofType: @"metallib"];
     id<MTLLibrary> ShaderLibrary = [MetalKitView.device newLibraryWithFile: ShaderLibraryFilePath error: nil];
     id<MTLFunction> VertexShader = [ShaderLibrary newFunctionWithName:@"vertexShader"];
     id<MTLFunction> FragmentShader = [ShaderLibrary newFunctionWithName:@"fragmentShader"];

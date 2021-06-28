@@ -1,0 +1,119 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		AC15575D26854BB3008807A1 /* PixelShaderDemo */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = AC15575E26854BB3008807A1 /* Build configuration list for PBXAggregateTarget "PixelShaderDemo" */;
+			buildPhases = (
+			);
+			dependencies = (
+			);
+			name = PixelShaderDemo;
+			productName = PixelShaderDemo;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXFileReference section */
+		AC15576226854BF1008807A1 /* mac_os_main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = mac_os_main.mm; path = ../mac_os_main.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		AC15575626854B7C008807A1 = {
+			isa = PBXGroup;
+			children = (
+				AC15576226854BF1008807A1 /* mac_os_main.mm */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		AC15575726854B7C008807A1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					AC15575D26854BB3008807A1 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = AC15575A26854B7C008807A1 /* Build configuration list for PBXProject "PixelShaderDemo" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AC15575626854B7C008807A1;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AC15575D26854BB3008807A1 /* PixelShaderDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		AC15575B26854B7C008807A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		AC15575C26854B7C008807A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		AC15575F26854BB3008807A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N79LQXAXD6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AC15576026854BB3008807A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N79LQXAXD6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AC15575A26854B7C008807A1 /* Build configuration list for PBXProject "PixelShaderDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC15575B26854B7C008807A1 /* Debug */,
+				AC15575C26854B7C008807A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AC15575E26854BB3008807A1 /* Build configuration list for PBXAggregateTarget "PixelShaderDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC15575F26854BB3008807A1 /* Debug */,
+				AC15576026854BB3008807A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AC15575726854B7C008807A1 /* Project object */;
+}
