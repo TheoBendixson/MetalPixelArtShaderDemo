@@ -5,6 +5,8 @@
 
 #include "mac_os_main.h"
 #include "mac_window.mm"
+#include "mac_file.cpp"
+#include "mac_metal_setup.mm"
 
 #include "../cross_platform/code/pixel_shader_demo.cpp"
 
@@ -30,7 +32,6 @@
 @end
 
 static const NSUInteger kMaxInflightBuffers = 3;
-
 
 @implementation MetalViewDelegate
 {
@@ -99,8 +100,8 @@ static const NSUInteger kMaxInflightBuffers = 3;
             id<MTLBuffer> VertexBuffer = [[self VertexBuffers] objectAtIndex: _currentFrameIndex];
             [RenderEncoder setVertexBuffer: VertexBuffer offset: 0 atIndex: 0];
 
-            TextureSize.Width = 23;
-            TextureSize.Height = 31;
+            TextureSize.Width = 32;
+            TextureSize.Height = 32;
             [RenderEncoder setVertexBytes:&TextureSize
                                    length:sizeof(TextureSize)
                                   atIndex:2];
@@ -230,15 +231,34 @@ int main(int argc, const char * argv[])
     MetalViewDelegate *ViewDelegate = [[MetalViewDelegate alloc] init];
 
     game_memory GameMemory = {};
-    GameMemory.PermanentStorageSize = Megabytes(64);
-    GameMemory.PermanentStorage = mmap(0, GameMemory.PermanentStorageSize,
-                                    PROT_READ | PROT_WRITE,
-                                    MAP_PRIVATE | MAP_ANON, -1, 0);
+    u64 TotalMemorySize = Megabytes(64);
+    GameMemory.PermanentStorageSize = Megabytes(32);
+    GameMemory.PermanentStorage = mmap(0, TotalMemorySize,
+                                       PROT_READ | PROT_WRITE,
+                                       MAP_PRIVATE | MAP_ANON, -1, 0);
+
+    GameMemory.TransientStorageSize = Megabytes(32);
+    GameMemory.TransientStorage = (u8*)GameMemory.PermanentStorage + GameMemory.TransientStorageSize;
 
     if (GameMemory.PermanentStorage == MAP_FAILED) {
 		printf("mmap error: %d  %s", errno, strerror(errno));
-        [NSException raise: @"Game Memory Not Allocated"
-                     format: @"Failed to allocate permanent storage"];
+        [NSException raise: @"Memory Not Allocated"
+                     format: @"Failed to allocate memory"];
+    }
+
+    game_texture_buffer TextureBuffer = {};
+    GameLoadTextures(&GameMemory, &TextureBuffer);
+
+    id<MTLTexture> TextureAtlas = SetupMetalTexture(MetalKitView, 32, 32, TextureBuffer.MaxTextures, 
+                                                    &TextureBuffer);
+
+    // Wipe the scratch space
+    u8* Byte = (u8*)GameMemory.TransientStorage;
+    for (u32 Index = 0; 
+         Index < GameMemory.TransientStorageSize; 
+         Index++)
+    {
+        *Byte++ = 0;
     }
 
     ViewDelegate.GameMemory = GameMemory; 
@@ -246,6 +266,7 @@ int main(int argc, const char * argv[])
     ViewDelegate.PixelArtPipelineState = PixelArtPipelineState;
     ViewDelegate.CommandQueue = CommandQueue;
     ViewDelegate.VertexBuffers = VertexBuffers;
+    ViewDelegate.TextureAtlas = TextureAtlas;
 
     [ViewDelegate configureMetal];
     [MetalKitView setDelegate: ViewDelegate];

@@ -4,7 +4,8 @@ OSX_LD_FLAGS="-framework AppKit
               -framework MetalKit
               -framework QuartzCore"
 
-COMMON_COMPILER_FLAGS="$OSX_LD_FLAGS"
+COMMON_COMPILER_FLAGS="-Wno-c++11-compat-deprecated-writable-strings
+                       $OSX_LD_FLAGS"
 
 MAC_PLATFORM_LAYER_PATH="../../code/mac_platform_layer"
 

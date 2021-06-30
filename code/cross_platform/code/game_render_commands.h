@@ -9,6 +9,20 @@ struct game_texture_vertex
     u32 TextureID;
 };
 
+struct game_texture
+{
+    uint32 *Data;
+    uint32 Width;
+    uint32 Height;
+};
+
+struct game_texture_buffer
+{
+    game_texture *Textures;
+    uint32 MaxTextures;
+    uint32 TexturesLoaded;
+};
+
 struct game_texture_command_buffer
 {
     game_texture_vertex *TextureVertices;

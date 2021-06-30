@@ -21,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		AC15576226854BF1008807A1 /* mac_os_main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = mac_os_main.mm; path = ../mac_os_main.mm; sourceTree = "<group>"; };
+		AC9BF0AE268D087F00A7476B /* pixel_shader_demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = pixel_shader_demo.cpp; path = ../../cross_platform/code/pixel_shader_demo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -28,6 +29,7 @@
 			isa = PBXGroup;
 			children = (
 				AC15576226854BF1008807A1 /* mac_os_main.mm */,
+				AC9BF0AE268D087F00A7476B /* pixel_shader_demo.cpp */,
 			);
 			sourceTree = "<group>";
 		};
