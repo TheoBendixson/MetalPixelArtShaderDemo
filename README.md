@@ -1,5 +1,4 @@
 # 2D Scaling Pixel Art Shader Demo App 
-# (Mac OS / Metal Shading Language)
 
 ## What is it?
 This is a demo project for a scaling 2D pixel art shader, currently written in the Metal shading language and available on the Mac OS platform.
