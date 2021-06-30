@@ -74,7 +74,7 @@ vertexShader(uint vertexID [[ vertex_id ]],
 
 // Fragment functions
 fragment float4
-textureAtlasFragmentShader(RasterizerData in [[stage_in]],
+fragmentShader(RasterizerData in [[stage_in]],
                            texture2d_array<half> texture_atlas [[ texture(0) ]])
 {
     constexpr sampler textureSampler (mag_filter::linear,

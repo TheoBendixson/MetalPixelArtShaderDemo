@@ -29,7 +29,7 @@ rm -rf PixelShaderDemo.app
 mkdir -p $BUNDLE_RESOURCES_PATH
 cp PixelShaderDemo PixelShaderDemo.app/PixelShaderDemo
 cp -r PixelShaderDemo.dSYM ${BUNDLE_RESOURCES_PATH}/PixelShaderDemo.dSYM
-cp -r ${RESOURCES_PATH} ${BUNDLE_RESOURCES_PATH}
+cp -r "${RESOURCES_PATH}/animation.asset" ${BUNDLE_RESOURCES_PATH}
 cp ${PLATFORM_RESOURCES_PATH}/Info.plist PixelShaderDemo.app/Contents/Info.plist
 cp PixelArtShader.metallib ${BUNDLE_RESOURCES_PATH}/PixelArtShader.metallib
 

@@ -2,6 +2,7 @@
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 #import <MetalKit/MetalKit.h>
+#include <mach-o/dyld.h>
 
 #include "mac_os_main.h"
 #include "mac_window.mm"

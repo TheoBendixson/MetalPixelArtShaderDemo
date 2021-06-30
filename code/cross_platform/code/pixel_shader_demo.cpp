@@ -71,16 +71,14 @@ InitializeTextureBuffer(memory_arena *ScratchArena, game_texture_buffer *Texture
 }
 
 void 
-LoadTextureFromSpritesheet(memory_arena *ScratchArena, u32 PixelsToAllocate,
-                           spritesheet *SpriteSheet, game_texture_buffer *TextureBuffer, 
-                           spritesheet_section SpriteSheetSection, axis_flip_mode AxisFlipMode, 
-                           spritesheet_position Position)
+LoadTextureFromSpritesheet(memory_arena *ScratchArena, spritesheet *SpriteSheet, game_texture_buffer *TextureBuffer, 
+                           spritesheet_section SpriteSheetSection, spritesheet_position Position)
 {
     game_texture Texture = TextureBuffer->Textures[TextureBuffer->TexturesLoaded];
     Texture.Width = SpriteSheetSection.SamplingWidth;
     Texture.Height = SpriteSheetSection.SamplingHeight;
-    Texture.Data = PushArray(ScratchArena, PixelsToAllocate, u32);
-
+    u32 TotalPixels = Texture.Width*Texture.Height;
+    Texture.Data = PushArray(ScratchArena, TotalPixels, u32);
     u32 *PixelDest = (u32 *)Texture.Data;
     u32 *PixelSource = SpriteSheet->Data;
 
@@ -88,32 +86,19 @@ LoadTextureFromSpritesheet(memory_arena *ScratchArena, u32 PixelsToAllocate,
     u32 RowSizeInPixels = SpriteSheet->TexturesPerRow*TextureWidthHeight;
 
     s32 StartingXOffsetInPixels = Position.Column*TextureWidthHeight;
-
     u32 DestRowCount = 0;
 
-    for (s32 Row = (Position.Row*TextureWidthHeight + (SpriteSheetSection.YOffset - 1 + SpriteSheetSection.SamplingHeight)); 
-         Row >= (Position.Row*TextureWidthHeight + SpriteSheetSection.YOffset); 
+    for (s32 Row = (Position.Row*TextureWidthHeight + SpriteSheetSection.SamplingHeight -1); 
+         ((Row >= (Position.Row*TextureWidthHeight)) && (Row >= 0)); 
          Row--)
     {
         u32 *DestRow = PixelDest + (DestRowCount*Texture.Width);
 
-        if (AxisFlipMode == AxisFlipModeNone)
+        for (s32 Column = SpriteSheetSection.XOffset; 
+             Column <= (SpriteSheetSection.SamplingWidth); 
+             Column++)
         {
-            for (s32 Column = SpriteSheetSection.XOffset; 
-                 Column <= (SpriteSheetSection.SamplingWidth + SpriteSheetSection.XOffset); 
-                 Column++)
-            {
-                *DestRow++ = PixelSource[StartingXOffsetInPixels + (Row*RowSizeInPixels) + Column];
-            }
-
-        } else if (AxisFlipMode == AxisFlipModeX)
-        {
-            for (s32 Column = (SpriteSheetSection.XOffset + SpriteSheetSection.SamplingWidth - 1); 
-                 Column >= SpriteSheetSection.XOffset; 
-                 Column--)
-            {
-                *DestRow++ = PixelSource[StartingXOffsetInPixels + (Row*RowSizeInPixels) + Column];
-            }
+            *DestRow++ = PixelSource[StartingXOffsetInPixels + (Row*RowSizeInPixels) + Column];
         }
 
         DestRowCount++;
@@ -137,12 +122,11 @@ GameLoadTextures(game_memory *Memory, game_texture_buffer *TextureBuffer)
 
     if (AssetFile.ContentsSize > 0)
     {
-        u32 *TextureData = (u32*)AssetFile.Contents;
-
         spritesheet GameCharacterSpriteSheet = {};
+        GameCharacterSpriteSheet.Data = (u32*)AssetFile.Contents;
         GameCharacterSpriteSheet.TextureWidthHeight = 32;
         GameCharacterSpriteSheet.TexturesPerRow = 8;
-        GameCharacterSpriteSheet.TexturesPerColumn = 7;
+        GameCharacterSpriteSheet.TexturesPerColumn = 1;
 
         spritesheet_section PlayerSection = {};
         PlayerSection.XOffset = 0; 
@@ -152,15 +136,14 @@ GameLoadTextures(game_memory *Memory, game_texture_buffer *TextureBuffer)
 
         spritesheet_position TexturePosition = {};
         TexturePosition.Row = 0;
-        uint32 PlayerPixelsPerTexture = 32*32;
+        u32 PlayerPixelsPerTexture = 32*32;
 
-        for (uint32 Column = 0; Column < 8; Column++)
+        for (u32 Column = 0; Column < 8; Column++)
         {
             TexturePosition.Column = Column;
 
-            LoadTextureFromSpritesheet(ScratchArena, PlayerPixelsPerTexture,
-                                       &GameCharacterSpriteSheet, TextureBuffer, 
-                                       PlayerSection, AxisFlipModeNone, TexturePosition);
+            LoadTextureFromSpritesheet(ScratchArena, &GameCharacterSpriteSheet, TextureBuffer, 
+                                       PlayerSection, TexturePosition);
         }
     }
 }
