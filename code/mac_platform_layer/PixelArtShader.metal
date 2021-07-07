@@ -83,10 +83,10 @@ fragmentShader(RasterizerData in [[stage_in]],
     float2 alpha = float2(0.07);
     float2 x = fract(in.vUv);
 
-    float2 x_ = clamp(0.5/(alpha*x), 0.0, 0.5) +
-                clamp((0.5/(alpha*(x - 1.0))) + 0.5, 0.0, 0.5);
+    float2 xprime = clamp(0.5/(alpha*x), 0.0, 0.5) +
+                    clamp((0.5/(alpha*(x - 1.0))) + 0.5, 0.0, 0.5);
 
-    float2 textureCoordinate = (floor(in.vUv) + x_)/in.textureSize;
+    float2 textureCoordinate = (floor(in.vUv) + xprime)/in.textureSize;
 
     const half4 colorSample = texture_atlas.sample(textureSampler, textureCoordinate, in.textureID);
 
