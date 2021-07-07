@@ -151,7 +151,16 @@ GameLoadTextures(game_memory *Memory, game_texture_buffer *TextureBuffer)
 internal void
 GameUpdateAndRender(game_memory *GameMemory, game_render_commands *RenderCommands)
 {
-    u32 TextureID = 0;
+    game_state *GameState = (game_state *)GameMemory;
+
+    if (!GameMemory->IsInitialized)
+    {
+        GameState->TextureIndex = 0;
+        GameState->FrameIndex = 0;
+        GameMemory->IsInitialized = true;
+    }
+
+    u32 TextureID = (u32)GameState->TextureIndex;
 
     v2 vMin = V2(0, 0);
     v2 vMax = V2(100, 100);
@@ -181,4 +190,19 @@ GameUpdateAndRender(game_memory *GameMemory, game_render_commands *RenderCommand
         *Dest++ = *Source++;
         TextureBuffer->NumberOfTextureVertices++;
     }
+    
+    GameState->FrameIndex++;
+   
+    if (GameState->FrameIndex > 10)
+    {
+        GameState->FrameIndex = 0;
+
+        GameState->TextureIndex++;
+
+        if (GameState->TextureIndex > 7)
+        {
+            GameState->TextureIndex = 0;
+        }
+    }
+
 }

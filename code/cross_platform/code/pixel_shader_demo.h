@@ -12,4 +12,6 @@
 struct game_state
 {
     memory_arena ScratchArena;
+    u8 TextureIndex;
+    u8 FrameIndex;
 };
