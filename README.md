@@ -26,6 +26,6 @@ Unlike Apple's typical sample projects, this demo project doesn't use much objec
 
 I want to show people an alternative to the mainstream, a way to build games and game engines that is less abstract, more simple, and more direct. I use a minimal form of C++, so it's more like straight C programming for most of the logic that runs on the CPU.
 
-If you've never seen something like this before and find yourself somewhat put off by it, I encourage you to be patient with it and give it a try. You might find that you enjoy having such direct control over the way your software works. I certainly do and will never go back to my old object oriented ways!
+If you've never seen something like this before and find yourself somewhat put off by it, I encourage you to be patient with it and give it a try. You might find that you enjoy having such direct control over the way your software works. I certainly do. 
 
-
+If you don't like it, that's fine too. As I said, there are already plenty of examples of how to do this the object oriented way. Apple's demos are object oriented by default. I figured the world could use more examples that aren't object oriented to balance out the culture.
