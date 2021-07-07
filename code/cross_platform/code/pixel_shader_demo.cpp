@@ -163,7 +163,7 @@ GameUpdateAndRender(game_memory *GameMemory, game_render_commands *RenderCommand
     u32 TextureID = (u32)GameState->TextureIndex;
 
     v2 vMin = V2(0, 0);
-    v2 vMax = V2(100, 100);
+    v2 vMax = V2(1024, 1024);
 
     y_component YComponent = InvertYAxis(RenderCommands->ViewportHeight, 
                                          vMin.Y, vMax.Y);
