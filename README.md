@@ -29,3 +29,10 @@ I want to show people an alternative to the mainstream, a way to build games and
 If you've never seen something like this before and find yourself somewhat put off by it, I encourage you to be patient with it and give it a try. You might find that you enjoy having such direct control over the way your software works. I certainly do. 
 
 If you don't like it, that's fine too. As I said, there are already plenty of examples of how to do this the object oriented way. Apple's demos are object oriented by default. I figured the world could use more examples that aren't object oriented to balance out the culture.
+
+## Where to find me
+🎮 [ITCH.IO](https://tedbendixson.itch.io/cove-kid)
+🐦 [TWITTER](https://twitter.com/TBendixson)
+📱 [ITUNES](https://apps.apple.com/us/developer/send-it-apps-llc/id1139954390)
+📄 [MEDIUM](https://theobendixson.medium.com)
+🦉 [WYZANT](https://www.wyzant.com/tutor/profile)
