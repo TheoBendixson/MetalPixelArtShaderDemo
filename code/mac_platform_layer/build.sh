@@ -16,6 +16,8 @@ RESOURCES_PATH="../../resources"
 PLATFORM_RESOURCES_PATH="../../code/mac_platform_layer/resources"
 
 echo Building Mac OS Pixel Art Shader Demo
+
+mkdir -p ../../build/mac_os
 pushd ../../build/mac_os
 
 xcrun -sdk macosx metal -mmacosx-version-min=10.14 -gline-tables-only -MO -g -c "${MAC_PLATFORM_LAYER_PATH}/PixelArtShader.metal" -o PixelArtShader.air
